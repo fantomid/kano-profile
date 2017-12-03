@@ -1,0 +1,15 @@
+[run]
+branch = True
+source = .
+omit =
+	tests/*
+	features/*
+data_file = reports/coverage
+
+
+[html]
+directory = reports/html
+
+[xml]
+output = reports/coverage.xml
+
