@@ -4,12 +4,12 @@ source = .
 omit =
 	tests/*
 	features/*
-data_file = reports/coverage
+data_file = reports/coverage/coverage
 
 
 [html]
-directory = reports/html
+directory = reports/coverage/html
 
 [xml]
-output = reports/coverage.xml
+output = reports/coverage/coverage.xml
 

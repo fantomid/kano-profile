@@ -13,6 +13,8 @@ empty:=
 space:= $(empty) $(empty)
 
 REPORT_DIR = reports
+COVERAGE_REPORT_DIR = $(REPORT_DIR)/coverage
+TESTS_REPORT_DIR = $(REPORT_DIR)/tests
 
 # Elaborate mechanism just to get the correct syntax for the pytest markers param
 _FIRST_TAG := $(firstword $(OMITTED_TAGS))
@@ -33,14 +35,17 @@ BEHAVE_TAGS_FLAG := $(join $(addprefix --tags=-,$(OMITTED_TAGS)), $(space))
 #     - pytest
 #     - behave
 #     - pytest-cov
+#     - pytest-tap
 #
 check:
 	# Refresh the reports directory
 	rm -rf $(REPORT_DIR)
 	mkdir -p $(REPORT_DIR)
+	mkdir -p $(COVERAGE_REPORT_DIR)
+	mkdir -p $(TESTS_REPORT_DIR)
 	# Run the tests
-	-coverage run --module pytest $(PYTEST_TAGS_FLAG)
-	-coverage run --append --module behave $(BEHAVE_TAGS_FLAG)
+	-coverage run --module pytest $(PYTEST_TAGS_FLAG) --junitxml=$(TESTS_REPORT_DIR)/pytest_results.xml
+	-coverage run --append --module behave $(BEHAVE_TAGS_FLAG) --junit --junit-directory=$(TESTS_REPORT_DIR)
 	# Generate reports
 	coverage xml
 	coverage html

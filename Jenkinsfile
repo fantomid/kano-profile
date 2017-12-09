@@ -37,19 +37,29 @@ stage ('Test') {
             // Run tests
             sh "$python_path_var make check OMITTED_TAGS=gtk"
 
+            // Publish tests report
+            junit(
+                allowEmptyResults: true,
+                healthScaleFactor: 0.0,
+                testResults: 'reports/tests/*.xml'
+            )
+
             // Publish coverage report
-            step([
-                $class: 'CoberturaPublisher',
-                autoUpdateHealth: false,
-                autoUpdateStability: false,
-                coberturaReportFile: '**/coverage.xml',
+            cobertura(
+                coberturaReportFile: 'reports/coverage/*.xml',
+                conditionalCoverageTargets: '70, 0, 0',
+                lineCoverageTargets: '80, 0, 0',
+                methodCoverageTargets: '80, 0, 0',
                 failUnhealthy: false,
                 failUnstable: false,
+                autoUpdateHealth: false,
+                autoUpdateStability: false,
                 maxNumberOfBuilds: 0,
                 onlyStable: false,
                 sourceEncoding: 'ASCII',
                 zoomCoverageChart: false
-            ])
+            )
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/coverage/html/*'
         }
     }
 }
